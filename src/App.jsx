@@ -1,6 +1,48 @@
-import { useState } from 'react';
+import { useState,useRef } from 'react';
 
 function App() {
+  const [inputValue, setInputValue] = useState('');
+  const [errorMessage,setErrorMessage] = useState('');
+  const buttonRef = useRef(null);
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+ const handleSubmit = (event) => {
+    event.preventDefault();
+    setErrorMessage('')
+    buttonRef.current.innerText = 'Downloading...';
+    buttonRef.current.disabled = true;
+    if (inputValue.trim() !== '') {
+      console.log('Input is filled');
+      fetchFile(inputValue)
+    } else {
+      console.log('Input is empty');
+    }
+  };
+  const fetchFile = (url)=>{
+    fetch(url)
+    .then(res => res.blob())
+    .then(file => {
+      let tempUrl = URL.createObjectURL(file);
+      const link = document.createElement('a');
+      link.href = tempUrl;
+      link.download = 'File';
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      console.log(tempUrl);
+      link.click();
+      link.remove();
+      buttonRef.current.innerText = 'Download';
+      buttonRef.current.disabled = false;
+    })
+    .catch((error) => {
+      console.log(error.message);
+      setErrorMessage('Error downloading')
+      buttonRef.current.innerText = 'Download';
+      buttonRef.current.disabled = false;
+    });
+  
+  }
   return (
     <>
       <div className='w-full flex justify-center items-center bg-blue-300 h-full-dvh'>
@@ -20,10 +62,11 @@ function App() {
             </p>
           </div>
           <div className='inputs px-5 pt-2'>
-              <input type="text" className='w-full border border-gray-500 focus:outline-none py-2 px-4 rounded-md text-xl' />
+              <input value={inputValue} onChange={handleInputChange} type="text" className='w-full border border-gray-500 focus:outline-none py-2 px-4 rounded-md text-xl' />
           </div>
           <div className='px-5 py-2'>
-            <button className='w-full bg-blue-700 text-white py-3 rounded-md' type='button'>Download</button>
+            <button ref={buttonRef} className='w-full bg-blue-700 text-white py-3 rounded-md disabled:cursor-not-allowed disabled:bg-blue-500' onClick={handleSubmit} type='button' disabled={!inputValue}>Download</button>
+            {errorMessage &&<p className='text-red-700 font-bold'>{errorMessage}</p>}
           </div>
         </div>
       </div>
