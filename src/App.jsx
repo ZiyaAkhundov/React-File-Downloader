@@ -45,7 +45,7 @@ function App() {
   }
   return (
     <>
-      <div className='w-full flex justify-center items-center bg-blue-300 h-full-dvh'>
+      <div className='w-full flex justify-center items-center bg-blue-200 h-full-dvh'>
         <div className="w-96 bg-white border rounded-md py-3">
           <div className="content">
             <h2 className='px-5 py-3 font-serif font-bold text-xl'>File Downloader</h2>
