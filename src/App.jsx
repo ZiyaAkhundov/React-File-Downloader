@@ -1,6 +1,18 @@
 import { useState,useRef } from 'react';
+import axios from 'axios';
 
 function App() {
+  const getPost = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/posts/feed/posts', {
+        withCredentials: true,
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  getPost();
   const [inputValue, setInputValue] = useState('');
   const [errorMessage,setErrorMessage] = useState('');
   const buttonRef = useRef(null);
